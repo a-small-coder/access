@@ -23,9 +23,15 @@ class CustomerListView(generic.ListView):
 class CustomerDetailView(generic.DetailView):
     template_name = 'customer/customer_detail.html'
     context_object_name = 'customer'
+    queryset = Customer.objects.all()
 
-    def get_queryset(self):
-        return Customer.objects.all()
+    def get_context_data(self, **kwargs):
+        context = super(CustomerDetailView, self).get_context_data(**kwargs)
+        print(self.queryset.first().orders)
+        context.update({
+            "orders": Order.objects.filter(customer=self.queryset.first())
+        })
+        return context
 
 
 class CustomerCreateView(generic.CreateView):

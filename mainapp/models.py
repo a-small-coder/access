@@ -37,7 +37,8 @@ class Order(models.Model):
         ('barter', 'Бартер'),
     )
 
-    customer = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.CASCADE,
+                                 related_name='orders')
     needed_product = models.ForeignKey(Product, verbose_name='Запаришваемый продукт', related_name='first_product',
                                        on_delete=models.CASCADE)
     needed_quantity = models.PositiveIntegerField(verbose_name='Количество нужного товара')

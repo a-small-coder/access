@@ -7,6 +7,7 @@ app_name = 'mainapp'
 urlpatterns = [
     path('', LandingPageView.as_view(), name='landing-page'),
     path('customer_list', CustomerListView.as_view(), name='customer-list'),
+    path('customer_detail/<int:pk>', CustomerDetailView.as_view(), name='customer-detail'),
 
     path('order_list', OrderListView.as_view(), name='order-list'),
 

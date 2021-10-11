@@ -15,9 +15,9 @@
     </div>
     {% for customer in customers %}
         <div class="w-full py-6">
-            <h1>{{ customer.name }} - {{ customer.comment }}</h1>
+            <h1 class="title-font text-2xl font-medium text-gray-900">{{ customer.name }} - {{ customer.comment }}</h1>
             <p>Всего покупок на {{ customer.all_count }} рублей</p>
-            <a class="text-red-800" href="#">Подробнее</a>
+            <a class="text-red-800" href="{% url 'mainapp:customer-detail' customer.pk %}">Подробнее</a>
             <br>
             <a class="text-red-800 text-right" href="#">Изменить данные</a>
         </div>
