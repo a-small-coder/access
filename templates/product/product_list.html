@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Список товаров
+{% endblock %}
+
+{% block content %}
+    <div class="w-full mb-6 py-6 flex justify-between item-center border-b border-gray-200">
+        <div>
+            <h1 class="text-4xl text-gray-800">Товары</h1>
+        </div>
+        <div>
+            <a class="text-red-800" href="#">Добавить товар</a>
+        </div>
+    </div>
+    {% for product in products %}
+        <div class="w-full py-6">
+            <h1>{{ product.name }}</h1>
+            <p>Цена за 1 шт.: {{ product.price }} рублей</p>
+            <p>На складе: {{product.quantity}} шт.</p>
+            <a class="text-ired-800 mb-10" href="#">Изменить</a>
+        </div>
+    {% endfor %}
+{% endblock %}

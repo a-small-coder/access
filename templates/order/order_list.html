@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Список заказов
+{% endblock %}
+
+{% block content %}
+    <div class="w-full mb-6 py-6 flex justify-between item-center border-b border-gray-200">
+        <div>
+            <h1 class="text-4xl text-gray-800">Заказы</h1>
+        </div>
+        <div>
+            <a class="text-red-800" href="#">Добавить заказ(?)</a>
+        </div>
+    </div>
+    {% for order in orders %}
+        <div class="w-full py-6">
+            <h1>{{ order.customer }}</h1>
+            <p>{{ order.needed_product.name }} ({{ order.needed_quantity }} шт.) - {{ order.needed_cost }} рублей</p>
+            <p>{{ order.get_pay_way_display }}</p>
+            <a class="text-red-800" href="#">Изменить</a>
+        </div>
+    {% endfor %}
+{% endblock %}
