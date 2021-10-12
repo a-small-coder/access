@@ -5,21 +5,28 @@
 {% endblock %}
 
 {% block content %}
-    <div class="w-full mb-6 py-6 justify-between item-center border-b border-gray-200">
+    <div class="w-full mb-4 py-6 justify-between item-center border-b border-gray-200">
         <h1 class="text-4xl text-gray-800">{{ customer.name }}</h1>
-        <p>Текущий счет: {{ customer.current_count }}</p>
-        <p>Сумма покупок: {{ customer.all_count }}</p>
-        <p>Кредитный лимит: {{ customer.credit_limit }}</p>
-        <p>Текущий кредит: {{ customer.current_credit }}</p>
-        <p>Остаток по кредиту: {{ customer.left_credit }}</p>
-        <p>Комментарий: {{ customer.comment }}</p>
+        <h2 class="title-font text-1xl font-medium text-gray-900">Текущий счет: <a class="text-green-800">{{ customer.current_count }}</a></h2>
+        <h2 class="title-font text-1xl font-medium text-gray-900">Сумма покупок: <a class="text-green-800">{{ customer.all_count }}</a></h2>
+        <h2 class="title-font text-1xl font-medium text-gray-900">Кредитный лимит: <a class="text-green-800">{{ customer.credit_limit }}</a></h2>
+        <h2 class="title-font text-1xl font-medium text-gray-900">Текущий кредит: <a class="text-green-800">{{ customer.current_credit }}</a></h2>
+
+            <h2 class="title-font text-1xl font-medium text-gray-900">Остаток по кредиту:
+                {% if customer.low_left_credit %}
+                    <a class="text-red-800">{{ customer.left_credit }}</a>
+                {% else %}
+                    <a class="text-green-800">{{ customer.left_credit }}</a>
+                {% endif %}
+            </h2>
+        <h2 class="title-font text-1xl font-medium text-gray-900">Комментарий: <a class="text-green-800">{{ customer.comment }}</a></h2>
     </div>
     <div class="w-full mb-6 py-6 flex justify-between item-center">
         <div>
             <h1 class="text-3xl text-gray-800">Заказы покупателя</h1>
         </div>
         <div>
-            <a class="text-red-800" href="#">Добавить заказ</a>
+            <a class="text-red-800" href="{% url 'mainapp:order-create' customer.pk %}">Создать заказ</a>
         </div>
     </div>
     {% for order in orders %}
@@ -34,8 +41,6 @@
             {% else %}
                 <h2 class="title-font text-1xl font-medium text-gray-900">Сумма покупки: {{ order.needed_cost }} рублей</h2>
             {% endif %}
-            <button class="inline-flex text-white bg-red-800 border-0 py-2 px-4 focus:outline-none hover:bg-red-900 rounded text-lg">Удалить</button>
-
         </div>
     {% endfor %}
 {% endblock %}

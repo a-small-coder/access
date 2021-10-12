@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.views import generic
 from django.urls import reverse_lazy
 
 from .models import *
+from .forms import *
 
 
 class LandingPageView(generic.TemplateView):
@@ -27,23 +28,10 @@ class CustomerDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(CustomerDetailView, self).get_context_data(**kwargs)
-        print(self.queryset.first().orders)
         context.update({
-            "orders": Order.objects.filter(customer=self.queryset.first())
+            "orders": reversed(Order.objects.filter(customer=self.queryset.first()))
         })
         return context
-
-
-class CustomerCreateView(generic.CreateView):
-    pass
-
-
-class CustomerUpdateView(generic.UpdateView):
-    pass
-
-
-class CustomerDeleteView(generic.DeleteView):
-    pass
 
 
 # Order
@@ -54,23 +42,33 @@ class OrderListView(generic.ListView):
     context_object_name = 'orders'
 
     def get_queryset(self):
-        return Order.objects.all()
-
-
-class OrderDetailView(generic.DetailView):
-    pass    # скорее всего не нужен
+        return reversed(Order.objects.all())
 
 
 class OrderCreateView(generic.CreateView):
-    pass    # должен быть доступен на странице конкретного покупателя
+    template_name = 'customer/customer_order_create.html'
+    queryset = Customer.objects.all()
+    context_object_name = 'customer'
+    success_url = reverse_lazy('mainapp:order-list')
+    form_class = OrderModelForm
 
+    # def get_form_class(self):
+    #     # request_path = self.request.path
+    #     # print(request_path)
+    #     # if request_path == reverse_lazy('mainapp:cash-order-create', kwargs={'pk': self.queryset.first().pk}):
+    #     #     return CashOrderModelForm
+    #     # elif request_path == reverse_lazy('mainapp:cashless-order-create', kwargs={'pk': self.queryset.first().pk}):
+    #     #     return CashlessOrderModelForm
+    #     # elif request_path == reverse_lazy('mainapp:barter-order-create', kwargs={'pk': self.queryset.first().pk}):
+    #     #     return BarterOrderModelForm
+    #     # else:
+    #     #     return SellOrderModelForm
+    #     return OrderForm
 
-class OrderUpdateView(generic.UpdateView):
-    pass    # хз, как реализовать   мб, не стоит делать
-
-
-class OrderDeleteView(generic.DeleteView):
-    pass    # на странице списка заказов и конкретного покупателя
+    def form_valid(self, form):
+        order = form.save(commit=False)
+        order.customer = self.queryset.first()
+        return HttpResponse('Oh, hi, Mark!')
 
 
 # Product
@@ -82,19 +80,3 @@ class ProductListView(generic.ListView):
 
     def get_queryset(self):
         return Product.objects.all()
-
-
-class ProductDetailView(generic.DetailView):
-    pass    # скорее всего не нужен
-
-
-class ProductCreateView(generic.CreateView):
-    pass
-
-
-class ProductUpdateView(generic.UpdateView):
-    pass
-
-
-class ProductDeleteView(generic.DeleteView):
-    pass

@@ -10,7 +10,7 @@
             <h1 class="text-4xl text-gray-800">Покупатели</h1>
         </div>
         <div>
-            <a class="text-red-800" href="#">Добавить покупателя</a>
+            <a class="text-red-800" href="#">Найти покупателя (или прямо сюда форму запихнуть?)</a>
         </div>
     </div>
     {% for customer in customers %}
@@ -19,7 +19,6 @@
             <p>Всего покупок на {{ customer.all_count }} рублей</p>
             <a class="text-red-800" href="{% url 'mainapp:customer-detail' customer.pk %}">Подробнее</a>
             <br>
-            <a class="text-red-800 text-right" href="#">Изменить данные</a>
         </div>
     {% endfor %}
 {% endblock %}

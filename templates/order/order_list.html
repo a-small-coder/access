@@ -14,11 +14,18 @@
         </div>
     </div>
     {% for order in orders %}
-        <div class="w-full py-6">
-            <h1>{{ order.customer }}</h1>
-            <p>{{ order.needed_product.name }} ({{ order.needed_quantity }} шт.) - {{ order.needed_cost }} рублей</p>
-            <p>{{ order.get_pay_way_display }}</p>
-            <a class="text-red-800" href="#">Изменить</a>
+        <div class="w-full py-4">
+            <h2 class="title-font text-2xl font-medium text-gray-900">Номер заказа: {{ order.id }}: {{ order.get_pay_way_display }}</h2>
+            <h2 class="title-font text-1xl font-medium text-gray-900">Покупатель: {{ order.customer.name }}</h2>
+            <h2 class="title-font text-1xl font-medium text-gray-900">Приобретенный товар:</h2>
+            <p>{{ order.needed_product.name }} ({{ order.needed_quantity }} шт.) - {{ order.needed_cost }}</p>
+            {% if order.pay_way == 'barter' %}
+                <h2 class="title-font text-1xl font-medium text-gray-900">Обменяли на:</h2>
+                <p><p>{{ order.given_product.name }} ({{ order.given_quantity }} шт.) - {{ order.given_cost }}</p>
+                <h2 class="title-font text-1xl font-medium text-gray-900">Сумма покупки: {{ order.given_cost }} рублей</h2>
+            {% else %}
+                <h2 class="title-font text-1xl font-medium text-gray-900">Сумма покупки: {{ order.needed_cost }} рублей</h2>
+            {% endif %}
         </div>
     {% endfor %}
 {% endblock %}
