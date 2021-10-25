@@ -8,7 +8,9 @@
     <div class="w-full mb-4 py-6 justify-between item-center border-b border-gray-200">
         <h1 class="text-4xl text-gray-800">Создать заказ для клиента {{ customer.name }}</h1>
     </div>
-    <form method="post">
+    <form method="post" class="create-order" name="form">
         {% csrf_token %}
         {{ form.as_p }}
+        <input type="submit" value="оформить заказ" class="inline-flex text-white bg-red-800 border-0 py-2 px-6 focus:outline-none hover:bg-red-900 rounded text-lg">
+    </form>
 {% endblock %}

@@ -51,6 +51,7 @@ class OrderCreateView(generic.CreateView):
     context_object_name = 'customer'
     success_url = reverse_lazy('mainapp:order-list')
     form_class = OrderModelForm
+    print(queryset)
 
     # def get_form_class(self):
     #     # request_path = self.request.path
