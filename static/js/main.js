@@ -24,6 +24,7 @@ let elementVisibleState = {
     disable: 'none'
 }
 let expectedPayWayData = ['', 'cash', 'cashless', 'credit', 'barter', 'sell']
+
 // example product data
 let products = [
     {},
@@ -41,34 +42,76 @@ let products = [
 ]
 
 
-// show and disable "given" fields 
+// show or hide "given" and "needed" fields 
 function changeVisibleGivenFields(stateMod = 0){
-    let state
-    stateMod ? state = elementVisibleState.visible : state = elementVisibleState.disable;
-    givenProductSelect.parentNode.style.display = state;
-    givenQuantityInput.parentNode.style.display = state;
-    givenCostInput.parentNode.style.display = state;
-}
-
-function isNeedShowGivenFields(){
-    let isNeed = false;
-    if (payWaySelect != null){
-        console.log("-",payWaySelect.value,"-");
-        if (
-            payWaySelect.value === expectedPayWayData[4] ||
-            payWaySelect.value === expectedPayWayData[5]
-        ){
-            isNeed = true
-            }
-        else 
-            isNeed = false
+    switch (stateMod) {
+        case 0: // hide given fields and show needed fields
+            showNeededFields(elementVisibleState.visible)
+            showGivenFields(elementVisibleState.disable);
+            break;
+        case 1: // show given fields and show needed fields
+            showNeededFields(elementVisibleState.visible)
+            showGivenFields(elementVisibleState.visible);
+            break;
+        case 2: // show given fields and hide needed fields
+            showNeededFields(elementVisibleState.disable)
+            showGivenFields(elementVisibleState.visible);
+            break;
+        case 3: // hide given fields and hide needed fields
+            showNeededFields(elementVisibleState.disable)
+            showGivenFields(elementVisibleState.disable);
+            break;
+        default:
+            break;
     }
-    else 
-        isNeed = false
-    changeVisibleGivenFields(isNeed)
+}
+// support functions for show or hide fields
+// props: Type - string, support data - 'none', 'inherit
+function showGivenFields(visiblity){
+    givenProductSelect.parentNode.style.display = visiblity;
+    givenQuantityInput.parentNode.style.display = visiblity;
+    givenCostInput.parentNode.style.display = visiblity;
+}
+function showNeededFields(visiblity){
+    neededProductSelect.parentNode.style.display = visiblity;
+    neededQuantityInput.parentNode.style.display = visiblity;
+    neededCostInput.parentNode.style.display = visiblity;
 }
 
-// checking fields value
+// delete all data from fields
+function clearFields(){
+    neededProductSelect.value = 0;
+    neededQuantityInput.value = null;
+    neededCostInput.value = null;
+    givenProductSelect.value = 0;
+    givenQuantityInput.value = null;
+    givenCostInput.value = null;
+}
+
+function changeFieldsVisability(){
+    clearFields();
+    let isNeed = 3;  // hide all fields - when payWaySelect.value == ''
+    if (payWaySelect != null){
+        switch (payWaySelect.value) {
+            case expectedPayWayData[4]:  // 'barter'
+                isNeed = 1
+                break;
+            case expectedPayWayData[5]: // 'sell'
+                isNeed = 2
+                break;
+            case expectedPayWayData[0]: // no way selected
+                isNeed = 3
+                break;
+            default:
+                isNeed = 0; // other - 'cash', 'cashless', 'credit'
+                break;
+        }
+    }
+    changeVisibleGivenFields(isNeed);
+}
+
+// checking fields's value
+// props: DOM-fields (input field with product cost data, input field with product quantity data, select field with product types data)
 function setNeedCost(cInputField, qInputField, pSelectField){
     let quantity = qInputField.value;
     let oneCost = getProductCost(pSelectField);
@@ -83,7 +126,6 @@ function setNeedCost(cInputField, qInputField, pSelectField){
     console.log("oneCost ", oneCost);
     console.log("needed_cost ", cInputField.value);
 }
-
 function getProductCost(pSelectField){
     if (pSelectField?.value > 0 ){
         let product = products[pSelectField.value]
@@ -91,7 +133,6 @@ function getProductCost(pSelectField){
     }
     return null
 }
-
 function setQuantity(cInputField, qInputField, pSelectField){
     let allCost = cInputField.value;
     let oneCost = getProductCost(pSelectField);
@@ -106,29 +147,31 @@ function setQuantity(cInputField, qInputField, pSelectField){
     console.log("needed quantity ", qInputField.value);
 }
 
+
+// factories
 function setNeedCostWithoutGivenFields(){
     setNeedCost(neededCostInput, neededQuantityInput, neededProductSelect);
 }
-
 function setQuantityWithoutGivenFields(){
     setQuantity(neededCostInput, neededQuantityInput, neededProductSelect);
 }
-
 function setNeedCostGivenFields(){
     setNeedCost(givenCostInput, givenQuantityInput, givenProductSelect);
 }
-
 function setQuantityGivenFields(){
     setQuantity(givenCostInput, givenQuantityInput, givenProductSelect);
 }
 
 // start program, (when page load)
 document.addEventListener("DOMContentLoaded", function(){
-    console.log("Для начала, скроем лишнее от чужих глаз");
-    changeVisibleGivenFields();
+    // presets
+    clearFields();    
+    changeVisibleGivenFields(3);
+    neededProductSelect[0].style.display='none';
+    givenProductSelect[0].style.display='none';
 
-    console.log("и будем наблюдать из тени...");
-    payWaySelect.addEventListener('change', isNeedShowGivenFields);
+    // adding event listeners
+    payWaySelect.addEventListener('change', changeFieldsVisability);
 
     neededQuantityInput.addEventListener('keyup', setNeedCostWithoutGivenFields);
     neededProductSelect.addEventListener('change', setNeedCostWithoutGivenFields);
